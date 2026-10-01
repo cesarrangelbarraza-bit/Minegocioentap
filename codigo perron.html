@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Negocio - Enlaces</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200">
+
+    <!-- Navegación Superior -->
+    <header class="w-full py-4 px-6 flex justify-between items-center max-w-xl mx-auto">
+        <h1 id="nav-title" class="font-bold text-lg text-slate-800 tracking-tight">Mi Negocio</h1>
+        <button onclick="toggleAdminPanel()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-gear"></i> Personalizar
+        </button>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="w-full max-w-md mx-auto px-4 py-6 flex-grow flex flex-col items-center">
+        
+        <!-- Foto de Perfil y Datos -->
+        <div class="text-center mb-8 w-full">
+            <div class="relative w-28 h-28 mx-auto mb-4">
+                <img id="profile-img" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=300" alt="Foto de perfil" class="w-full h-full object-cover rounded-full shadow-md border-2 border-white">
+            </div>
+            <h2 id="profile-name" class="text-2xl font-bold text-slate-900 mb-1">Tu Negocio o Nombre</h2>
+            <p id="profile-bio" class="text-slate-600 text-sm max-w-xs mx-auto">Conecta con nosotros de forma rápida y sencilla a través de nuestros canales oficiales.</p>
+        </div>
+
+        <!-- Contenedor de Botones de Enlaces -->
+        <div id="links-container" class="w-full flex flex-col gap-4">
+            <!-- Los enlaces se cargarán dinámicamente aquí -->
+        </div>
+
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="w-full py-6 text-center text-xs text-slate-400">
+        <p>© <span id="current-year"></span> Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Panel de Administración / Personalización Lateral -->
+    <div id="admin-panel" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+        <div class="p-4 bg-slate-900 text-white flex justify-between items-center">
+            <h3 class="font-bold text-lg"><i class="fa-solid fa-sliders mr-2"></i> Panel de Negocio</h3>
+            <button onclick="toggleAdminPanel()" class="text-slate-400 hover:text-white p-2 text-lg"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div class="p-6 overflow-y-auto flex-grow space-y-6">
+            <!-- Datos Generales -->
+            <div class="space-y-4">
+                <h4 class="font-semibold text-slate-800 text-sm border-b pb-1">Información General</h4>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Nombre del Negocio</label>
+                    <input type="text" id="input-name" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-slate-900 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Descripción / Bio</label>
+                    <textarea id="input-bio" rows="2" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-slate-900 outline-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">URL de la Foto de Perfil</label>
+                    <input type="text" id="input-img" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-slate-900 outline-none">
+                </div>
+            </div>
+
+            <!-- Gestión de Enlaces -->
+            <div class="space-y-4">
+                <div class="flex justify-between items-center border-b pb-1">
+                    <h4 class="font-semibold text-slate-800 text-sm">Botones y Enlaces</h4>
+                    <button onclick="addLinkForm()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded text-xs font-medium transition">
+                        <i class="fa-solid fa-plus mr-1"></i> Añadir Enlace
+                    </button>
+                </div>
+                <div id="admin-links-list" class="space-y-3">
+                    <!-- Formularios dinámicos para editar enlaces -->
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 bg-slate-50 border-t flex justify-between items-center">
+            <button onclick="resetDefaults()" class="text-red-500 hover:text-red-700 text-xs font-medium">Restaurar valores</button>
+            <div class="flex gap-2">
+                <button onclick="toggleAdminPanel()" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold hover:bg-slate-300">Cancelar</button>
+                <button onclick="saveChanges()" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de lógica y almacenamiento -->
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Datos por defecto del negocio
+        const defaultData = {
+            name: "Tu Negocio o Marca",
+            bio: "Conecta con nosotros de forma rápida y sencilla a través de nuestros canales oficiales.",
+            img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=300",
+            links: [
+                { title: "Déjanos una Reseña", subtitle: "¡Tu opinión nos importa mucho!", url: "https://g.page/r/tu-enlace-de-resena", icon: "fa-solid fa-star", color: "bg-amber-500 hover:bg-amber-600 text-white" },
+                { title: "Escríbenos por WhatsApp", subtitle: "Atención inmediata y personalizada", url: "https://wa.me/528440000000", icon: "fa-brands fa-whatsapp", color: "bg-emerald-600 hover:bg-emerald-700 text-white" },
+                { title: "Síguenos en Instagram", subtitle: "@tucuentadeinstagram", url: "https://instagram.com", icon: "fa-brands fa-instagram", color: "bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:opacity-95 text-white" },
+                { title: "Mira nuestros videos en TikTok", subtitle: "@tucuentadetiktok", url: "https://tiktok.com", icon: "fa-brands fa-tiktok", color: "bg-slate-900 hover:bg-black text-white" },
+                { title: "Visítanos en Facebook", subtitle: "Mantente al día con nuestras novedades", url: "https://facebook.com", icon: "fa-brands fa-facebook", color: "bg-blue-600 hover:bg-blue-700 text-white" }
+            ]
+        };
+
+        // Cargar datos guardados en el navegador o usar valores por defecto
+        let businessData = JSON.parse(localStorage.getItem('businessData')) || defaultData;
+
+        function renderPage() {
+            document.getElementById('nav-title').textContent = businessData.name;
+            document.getElementById('profile-name').textContent = businessData.name;
+            document.getElementById('profile-bio').textContent = businessData.bio;
+            document.getElementById('profile-img').src = businessData.img;
+
+            const container = document.getElementById('links-container');
+            container.innerHTML = '';
+
+            businessData.links.forEach((link) => {
+                const a = document.createElement('a');
+                a.href = link.url;
+                a.target = "_blank";
+                a.rel = "noopener noreferrer";
+                a.className = `${link.color} w-full p-4 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-between group transform hover:-translate-y-0.5`;
+                
+                a.innerHTML = `
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-xl shrink-0">
+                            <i class="${link.icon}"></i>
+                        </div>
+                        <div class="text-left">
+                            <h3 class="font-bold text-sm leading-tight">${link.title}</h3>
+                            <p class="text-xs opacity-90 font-normal mt-0.5">${link.subtitle || ''}</p>
+                        </div>
+                    </div>
+                    <div class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </div>
+                `;
+                container.appendChild(a);
+            });
+        }
+
+        function toggleAdminPanel() {
+            const panel = document.getElementById('admin-panel');
+            panel.classList.toggle('translate-x-full');
+            if (!panel.classList.contains('translate-x-full')) {
+                loadAdminForm();
+            }
+        }
+
+        function loadAdminForm() {
+            document.getElementById('input-name').value = businessData.name;
+            document.getElementById('input-bio').value = businessData.bio;
+            document.getElementById('input-img').value = businessData.img;
+
+            const listContainer = document.getElementById('admin-links-list');
+            listContainer.innerHTML = '';
+
+            businessData.links.forEach((link, index) => {
+                const div = document.createElement('div');
+                div.className = "p-3 bg-slate-50 border rounded-lg space-y-2 relative";
+                div.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-700">Enlace #${index + 1}</span>
+                        <button onclick="removeLink(${index})" class="text-red-500 hover:text-red-700 text-xs"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                    </div>
+                    <input type="text" placeholder="Título del botón" value="${link.title}" class="link-title w-full px-2 py-1 border rounded text-xs" data-index="${index}">
+                    <input type="text" placeholder="Subtítulo opcional" value="${link.subtitle || ''}" class="link-sub w-full px-2 py-1 border rounded text-xs" data-index="${index}">
+                    <input type="text" placeholder="URL web (https://...)" value="${link.url}" class="link-url w-full px-2 py-1 border rounded text-xs" data-index="${index}">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" placeholder="Icono FontAwesome (ej: fa-solid fa-star)" value="${link.icon}" class="link-icon w-full px-2 py-1 border rounded text-xs" data-index="${index}">
+                        <select class="link-color w-full px-2 py-1 border rounded text-xs bg-white" data-index="${index}">
+                            <option value="bg-amber-500 hover:bg-amber-600 text-white" ${link.color.includes('amber')?'selected':''}>Amarillo / Reseñas</option>
+                            <option value="bg-emerald-600 hover:bg-emerald-700 text-white" ${link.color.includes('emerald')?'selected':''}>Verde / WhatsApp</option>
+                            <option value="bg-blue-600 hover:bg-blue-700 text-white" ${link.color.includes('blue')?'selected':''}>Azul / Facebook</option>
+                            <option value="bg-slate-900 hover:bg-black text-white" ${link.color.includes('slate-900')?'selected':''}>Negro / TikTok</option>
+                            <option value="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:opacity-95 text-white" ${link.color.includes('gradient')?'selected':''}>Rosa / Instagram</option>
+                        </select>
+                    </div>
+                `;
+                listContainer.appendChild(div);
+            });
+        }
+
+        function addLinkForm() {
+            businessData.links.push({
+                title: "Nuevo Enlace",
+                subtitle: "Descripción corta",
+                url: "https://",
+                icon: "fa-solid fa-link",
+                color: "bg-slate-700 hover:bg-slate-800 text-white"
+            });
+            loadAdminForm();
+        }
+
+        function removeLink(index) {
+            businessData.links.splice(index, 1);
+            loadAdminForm();
+        }
+
+        function saveChanges() {
+            businessData.name = document.getElementById('input-name').value;
+            businessData.bio = document.getElementById('input-bio').value;
+            businessData.img = document.getElementById('input-img').value;
+
+            const titles = document.querySelectorAll('.link-title');
+            const subs = document.querySelectorAll('.link-sub');
+            const urls = document.querySelectorAll('.link-url');
+            const icons = document.querySelectorAll('.link-icon');
+            const colors = document.querySelectorAll('.link-color');
+
+            titles.forEach((el, i) => {
+                businessData.links[i].title = el.value;
+                businessData.links[i].subtitle = subs[i].value;
+                businessData.links[i].url = urls[i].value;
+                businessData.links[i].icon = icons[i].value;
+                businessData.links[i].color = colors[i].value;
+            });
+
+            localStorage.setItem('businessData', JSON.stringify(businessData));
+            renderPage();
+            toggleAdminPanel();
+        }
+
+        function resetDefaults() {
+            if(confirm("¿Estás seguro de restaurar los valores iniciales?")) {
+                localStorage.removeItem('businessData');
+                businessData = JSON.parse(JSON.stringify(defaultData));
+                renderPage();
+                toggleAdminPanel();
+            }
+        }
+
+        // Inicializar la página al cargar
+        renderPage();
+    </script>
+</body>
+</html>
